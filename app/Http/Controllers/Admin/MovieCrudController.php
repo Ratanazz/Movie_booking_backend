@@ -57,6 +57,8 @@ class MovieCrudController extends CrudController
     {
         CRUD::setValidation(MovieRequest::class);
         CRUD::setFromDb(); // set fields from db columns.
+        CRUD::field('poster_image')->type('upload');
+        CRUD::field('image_banner')->type('upload');
 
         /**
          * Fields can be defined using the fluent syntax:

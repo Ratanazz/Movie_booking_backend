@@ -22,7 +22,8 @@ class Movie extends Model
         'release_date',
         'genre_id',
         'rating',
-        'poster_url',
+        'poster_image',
+        'image_banner',
         'trailer_url'
     ];
 
@@ -70,4 +71,8 @@ class Movie extends Model
     {
         return \Carbon\Carbon::parse($this->release_date)->format('F d, Y');
     }
+    // public function getPosterImageAttribute($value)
+    // {
+    // return url('storage/' . $value);
+    // }
 }

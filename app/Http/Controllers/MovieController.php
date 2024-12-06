@@ -26,25 +26,39 @@ class MovieController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'release_date' => 'required|date',
-            'genre_id' => 'required|exists:genres,id',
-            'rating' => 'required|numeric|between:0,5.0',
-            'poster_url' => 'nullable|string|url',
-            'trailer_url' => 'nullable|string|url',
-        ]);
+{
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'release_date' => 'required|date',
+        'genre_id' => 'required|exists:genres,id',
+        'rating' => 'required|numeric|min:0|max:10',
+        'poster_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'image_banner' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
+    // Remove the image fields from validated data
+    $movieData = collect($validated)
+        ->except(['poster_image', 'image_banner'])
+        ->toArray();
 
-        $movie = Movie::create($request->all());
-
-        return response()->json(['message' => 'Movie created successfully!', 'movie' => $movie], 201);
+    // Handle poster image
+    if ($request->hasFile('poster_image')) {
+        $posterImagePath = $request->file('poster_image')->store('images', 'public');
+        $movieData['poster_image'] = $posterImagePath;
     }
+    
+    // Handle banner image
+    if ($request->hasFile('image_banner')) {
+        $imageBannerPath = $request->file('image_banner')->store('images', 'public');
+        $movieData['image_banner'] = $imageBannerPath;
+    }
+
+    // Create the movie with all data including image paths
+    $movie = Movie::create($movieData);
+
+    return redirect()->route('movies.index')->with('success', 'Movie created successfully!');
+}
 
     /**
      * Display the specified resource.
@@ -66,23 +80,33 @@ class MovieController extends Controller
      */
     public function update(Request $request, Movie $movie)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'release_date' => 'required|date',
             'genre_id' => 'required|exists:genres,id',
-            'rating' => 'required|numeric|between:0,5.0',
-            'poster_url' => 'nullable|string|url',
-            'trailer_url' => 'nullable|string|url',
+            'rating' => 'required|numeric|min:0|max:10',
+            'poster_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image_banner' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+        if ($request->hasFile('poster_image')) {
+            // Store the image in the 'images' directory inside the 'public' disk
+            $posterImagePath = $request->file('poster_image')->store('images', 'public');
+            $movie->poster_image = $posterImagePath;
+            $movie->save(); // Save the relative path in the database
+        }
+        
+        if ($request->hasFile('image_banner')) {
+            // Store the image in the 'images' directory inside the 'public' disk
+            $imageBannerPath = $request->file('image_banner')->store('images', 'public');
+            $movie->image_banner = $imageBannerPath;
+            $movie->save(); // Save the relative path in the database
         }
 
-        $movie->update($request->all());
+        $movie->update($validated);
 
-        return response()->json(['message' => 'Movie updated successfully!', 'movie' => $movie]);
+        return redirect()->route('movies.index')->with('success', 'Movie updated successfully!');
     }
 
     /**
