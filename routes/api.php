@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\ProfileTestController;
+use App\Http\Controllers\BookingController;
 
 
 
@@ -24,3 +25,9 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 });
 
 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/bookings', [BookingController::class, 'store']);
+});
+
+Route::get('/shows/{show}/book', [BookingController::class, 'show'])->name('bookings.show');
+Route::get('/shows/{show}', [BookingController::class, 'show'])->name('bookings.show');

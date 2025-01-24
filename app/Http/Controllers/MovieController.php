@@ -67,9 +67,18 @@ class MovieController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function show(Movie $movie)
-    {
-        return response()->json($movie);
-    }
+{
+    $movie->load(['shows' => function ($query) {
+        $query->with(['screen', 'screen.theater']); 
+    }]);
+
+    // Optional: Include available seats for each show 
+    $movie->shows->each(function ($show) {
+        $show->available_seats = $show->screen->seats()->whereDoesntHave('bookings')->get(); 
+    });
+
+    return response()->json($movie);
+}
 
     /**
      * Update the specified resource in storage.

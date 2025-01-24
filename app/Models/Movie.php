@@ -26,6 +26,10 @@ class Movie extends Model
         'image_banner',
         'trailer_url'
     ];
+    public function shows()
+    {
+        return $this->hasMany(Show::class);
+    }
 
     /**
      * Define the relationship with the Genre model.
