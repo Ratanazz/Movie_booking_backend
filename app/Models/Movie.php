@@ -24,8 +24,19 @@ class Movie extends Model
         'rating',
         'poster_image',
         'image_banner',
-        'trailer_url'
+        'trailer_url',
+        'run_time', 
     ];
+
+    /**
+     * The attributes that should be appended to the model's array and JSON form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'formatted_run_time',
+    ];
+
     public function shows()
     {
         return $this->hasMany(Show::class);
@@ -75,8 +86,16 @@ class Movie extends Model
     {
         return \Carbon\Carbon::parse($this->release_date)->format('F d, Y');
     }
-    // public function getPosterImageAttribute($value)
-    // {
-    // return url('storage/' . $value);
-    // }
+
+    public function getFormattedRunTimeAttribute()
+    {
+        if (!$this->run_time) {
+            return null;
+        }
+
+        $hours = intdiv($this->run_time, 60);
+        $minutes = $this->run_time % 60;
+
+        return sprintf('%dh %02dmin', $hours, $minutes);
+    }
 }
