@@ -130,4 +130,14 @@ class MovieController extends Controller
 
         return response()->json(['message' => 'Movie deleted successfully!']);
     }
+    public function getAvailableSeats($showId)
+{
+    $show = Show::findOrFail($showId);
+    $bookedSeats = BookedSeat::where('show_id', $showId)->pluck('seat_id');
+    $availableSeats = Seat::where('screen_id', $show->screen_id)
+        ->whereNotIn('id', $bookedSeats)
+        ->get();
+
+    return response()->json($availableSeats);
+}
 }

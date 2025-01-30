@@ -65,4 +65,5 @@ class BookingController extends Controller
             return back()->with('error', 'Booking failed. Please try again.');
         }
     }
+    
 }

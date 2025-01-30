@@ -23,7 +23,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
         return response()->json(['message' => 'Welcome, Admin']);
     });
 });
-
+Route::middleware('auth:sanctum')->post('/book-seat', [BookingController::class, 'bookSeat']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/bookings', [BookingController::class, 'store']);
@@ -31,3 +31,4 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::get('/shows/{show}/book', [BookingController::class, 'show'])->name('bookings.show');
 Route::get('/shows/{show}', [BookingController::class, 'show'])->name('bookings.show');
+Route::get('/shows/{id}/seats', [MovieController::class, 'getAvailableSeats']);
