@@ -7,7 +7,7 @@ return [
     *
     * You can use wildcards (*) to match all paths.
     */
-    'paths' => ['*'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
     /*
     * Allowed methods for CORS requests.
@@ -34,7 +34,7 @@ return [
     * Enables "Access-Control-Allow-Origin" header when the request origin domain is the same
     * as the server domain.
     */
-    'supports_credentials' => false,
+    'supports_credentials' => true,
 
     /*
     * Enables "Access-Control-Expose-Headers" for headers that are not mentioned in "allowed_headers"

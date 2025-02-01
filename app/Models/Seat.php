@@ -1,13 +1,14 @@
 <?php
 namespace App\Models;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Seat extends Model
-{
+{   use HasFactory;
     protected $fillable = ['screen_id', 'seat_number', 'is_vip'];
 
+    
     public function screen()
     {
         return $this->belongsTo(Screen::class);
