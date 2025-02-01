@@ -29,7 +29,7 @@ class MovieController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
-{
+    {
     $validated = $request->validate([
         'title' => 'required|string|max:255',
         'description' => 'nullable|string',

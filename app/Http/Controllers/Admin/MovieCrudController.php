@@ -54,17 +54,81 @@ class MovieCrudController extends CrudController
      * @return void
      */
     protected function setupCreateOperation()
-    {
-        CRUD::setValidation(MovieRequest::class);
-        CRUD::setFromDb(); // set fields from db columns.
-        CRUD::field('poster_image')->type('upload');
-        CRUD::field('image_banner')->type('upload');
+{
+    CRUD::setValidation(MovieRequest::class);
 
-        /**
-         * Fields can be defined using the fluent syntax:
-         * - CRUD::field('price')->type('number');
-         */
-    }
+    // Add fields for the form
+    CRUD::addField([
+        'name'  => 'title',
+        'label' => 'Title',
+        'type'  => 'text',
+    ]);
+
+    CRUD::addField([
+        'name'  => 'description',
+        'label' => 'Description',
+        'type'  => 'textarea',
+    ]);
+
+    CRUD::addField([
+        'name'  => 'release_date',
+        'label' => 'Release Date',
+        'type'  => 'date',
+    ]);
+
+    CRUD::addField([
+        'name'        => 'genre_id', // Foreign key column
+        'label'       => 'Genre',
+        'type'        => 'select',
+        'entity'      => 'genre', // Relationship method on the Movie model
+        'attribute'   => 'name', // Attribute on the Genre model to display
+        'model'       => \App\Models\Genre::class, // Related model
+    ]);
+
+    CRUD::addField([
+        'name'  => 'rating',
+        'label' => 'Rating',
+        'type'  => 'number',
+        'attributes' => [
+            'step' => '0.1', // Allow decimal values
+            'min'  => '0',
+            'max'  => '10',
+        ],
+    ]);
+
+    CRUD::addField([
+        'name'  => 'poster_image',
+        'label' => 'Poster Image',
+        'type'  => 'url',
+        // 'type'  => 'upload',
+        // 'upload' => true, // Enable file upload
+        // 'disk'  => 'public', // Storage disk
+    ]);
+
+    CRUD::addField([
+        'name'  => 'image_banner',
+        'label' => 'Banner Image',
+        'type'  => 'url',
+        // 'type'  => 'upload',
+        // 'upload' => true, // Enable file upload
+        // 'disk'  => 'public', // Storage disk
+    ]);
+    CRUD::addField([
+        'name'  => 'trailer_url',
+        'label' => 'Trailer URL',
+        'type'  => 'url', // Use 'url' type for proper validation
+    ]);
+
+    // Add run_time field
+    CRUD::addField([
+        'name'  => 'run_time',
+        'label' => 'Run Time (minutes)',
+        'type'  => 'number',
+        'attributes' => [
+            'min'  => '0', // Ensure positive values
+        ],
+    ]);
+}
 
     /**
      * Define what happens when the Update operation is loaded.

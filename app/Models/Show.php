@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class Show extends Model
 {
+    use CrudTrait;
     protected $fillable = ['movie_id', 'screen_id', 'show_time', 'price'];
     
     protected $casts = [
