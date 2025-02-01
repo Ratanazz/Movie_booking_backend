@@ -95,4 +95,14 @@ class BookingController extends Controller
             ], 500);
         }
     }
+    public function myBookings()
+        {
+            $bookings = Booking::with(['show.movie', 'bookedSeats.seat'])
+                ->where('user_id', auth()->id())
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            return response()->json($bookings);
+            
+        }
 }
